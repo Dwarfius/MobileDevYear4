@@ -1,0 +1,26 @@
+curl 'https://celcat.gcu.ac.uk/calendar/Login.aspx' -H 'Cookie: ASP.NET_SessionId=egtlbnoupvt24phldb2pg2az' -H 'Content-Type: application/x-www-form-urlencoded' --data '__VIEWSTATE=%2FwEPDwUJMzU2NTg3MDE4D2QWAgIDD2QWAgIRDw8WBB4EVGV4dGUeB1Zpc2libGVoZGRkYc6AkMFcCYyHS1w91IqOAcd2HM00kBLcE2D4ZD%2BZzeQ%3D&__EVENTVALIDATION=%2FwEdAAR9V4MAYTlMjb3DA2v6SI7jY3plgk0YBAefRz3MyBlTcA6Puailico2fWp193TJgzGinihG6d%2FXh3PZm3b5AoMQb%2BKSStLwK3orlGQ2p9qrAxgKk5RHpCK%2Fv5H92i%2Fg4ik%3D&txtUserName=dpriho200&txtUserPass=Ffzkdpcu1&btnLogin=+++Log+In+++' --compressed
+
+Notes:
+* ASP.NET_SessionId get verified, but it acts strange, curl shows that I can be redirected AND shows the login page if it's incorrect/out of date... dafuq?
+* Seems like __VIEWSTATE and __EVENTVALIDATION are tied to the ASP.NET_SessionId cookie.
+
+Removed data:
+__EVENTTARGET=&
+__EVENTARGUMENT=&
+__VIEWSTATEGENERATOR=B03196AA&
+
+Removed cookies:
+Hm_lvt_16ab02cdcbf06672ffe0d2318245e5c7=1475400473,1475860957,1476223249,1476558969;
+_ga=GA1.3.1544448120.1469554671;
+.ASPXAUTH=C3B7F209E55B6BE22D43714241177656F27205A953DFCDCFC984C3F63144D1F76A9302D3F5E952C6C09144A293FE627A3E299B04CD1A1514E859113D193068024C1564337502CE7635B5A07177B9C1029E9255D74A25DA785BE83F66765C724816F5EECC87D2FEA67FC94EFA1B46DCA1C4AF539A47177708D725485E3DD4ACC9A01D6E058EC32D8FA27A41468FD087F1 //funny that this isn't needed
+
+Removed Headers:
+-H 'Accept-Encoding: gzip, deflate, br'
+-H 'Origin: https://celcat.gcu.ac.uk'
+-H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+-H 'Connection: keep-alive'
+-H 'User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
+-H 'Cache-Control: max-age=0'
+-H 'Referer: https://celcat.gcu.ac.uk/calendar/Login.aspx'
+-H 'Upgrade-Insecure-Requests: 1'
+-H 'Accept-Language: en-US,en;q=0.8'
