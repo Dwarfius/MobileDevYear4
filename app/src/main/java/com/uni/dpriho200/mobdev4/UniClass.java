@@ -24,11 +24,12 @@ class UniClass implements Parcelable {
     private String description;
     private Date start, end;
     private Date group;
+    private int id;
 
     UniClass(JSONObject json) throws JSONException
     {
         description = json.getString("text");
-
+        id = Integer.parseInt(json.getString("id"));
         DateFormat formatter = new SimpleDateFormat(dayFormat, Locale.US);
         DateFormat groupFormatter = new SimpleDateFormat(groupFormat, Locale.US);
         try {
@@ -47,23 +48,6 @@ class UniClass implements Parcelable {
     }
 
     // Parcelable implementation
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(description);
-
-        DateFormat formatter = new SimpleDateFormat(groupFormat, Locale.US);
-        dest.writeString(formatter.format(group));
-
-        formatter = new SimpleDateFormat(dayFormat, Locale.US);
-        dest.writeString(formatter.format(start));
-        dest.writeString(formatter.format(end));
-    }
-
     // Creator
     public static final Parcelable.Creator CREATOR
             = new Parcelable.Creator() {
@@ -76,9 +60,28 @@ class UniClass implements Parcelable {
         }
     };
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(description);
+        dest.writeInt(id);
+
+        DateFormat formatter = new SimpleDateFormat(groupFormat, Locale.US);
+        dest.writeString(formatter.format(group));
+
+        formatter = new SimpleDateFormat(dayFormat, Locale.US);
+        dest.writeString(formatter.format(start));
+        dest.writeString(formatter.format(end));
+    }
+
     // "De-parcel object
     UniClass(Parcel in) {
         description = in.readString();
+        id = in.readInt();
         try {
             DateFormat formatter = new SimpleDateFormat(groupFormat, Locale.US);
             group = formatter.parse(in.readString());

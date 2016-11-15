@@ -82,6 +82,16 @@ class CalendarAdapter extends ArrayAdapter<Object> {
         return new CalendarAdapter(context, processedItems);
     }
 
+    @Override
+    public boolean areAllItemsEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return items.get(position) instanceof UniClass;
+    }
+
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
