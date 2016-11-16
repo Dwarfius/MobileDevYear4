@@ -55,23 +55,24 @@ class CalendarAdapter extends ArrayAdapter<Object> {
         });
 
         ArrayList<Object> processedItems = new ArrayList<Object>();
-        Date currGroup = new Date(0);
+        int currWeek = -1;
         int currDay = -1;
         Calendar calendar = Calendar.getInstance();
-        DateFormat groupFormatter = new SimpleDateFormat(UniClass.groupFormat, Locale.US);
-        DateFormat dayFormat = new SimpleDateFormat("E", Locale.US);
+        DateFormat groupFormatter = new SimpleDateFormat("d MMMM, yyyy", Locale.US);
+        DateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
         for(UniClass uniClass : items)
         {
             Date start = uniClass.getStart();
             calendar.setTime(start);
 
-            Date group = uniClass.getGroup();
-            if(group.compareTo(currGroup) != 0)
+            int week = calendar.get(Calendar.WEEK_OF_YEAR); //need of_year to avoid split on month transition
+            if(week != currWeek)
             {
-                processedItems.add(new WeekRow(groupFormatter.format(group)));
-                currGroup = group;
+                processedItems.add(new WeekRow(groupFormatter.format(start)));
+                currWeek = week;
             }
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            int day = calendar.get(Calendar.DAY_OF_WEEK);
             if(day != currDay)
             {
                 processedItems.add(new DayRow(dayFormat.format(start)));

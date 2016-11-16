@@ -4,16 +4,17 @@
     android:id="@+id/activity_calendar_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:padding="0dp"
     tools:context="com.uni.dpriho200.mobdev4.CalendarView">
 
+    <!-- In order to make the gap between the items disappear
+    (for divider height = 0 to start working) a divider needs to be specified -->
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:divider="@android:color/holo_green_light"
+        android:dividerHeight="0dp">
 
     </ListView>
 
