@@ -15,7 +15,10 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_centerInParent="true"
-        android:id="@+id/linearLayout">
+        android:id="@+id/linearLayout"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
         <TextView
             android:text="Welcome!"
             android:layout_width="wrap_content"

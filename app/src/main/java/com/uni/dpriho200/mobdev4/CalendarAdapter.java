@@ -2,7 +2,6 @@ package com.uni.dpriho200.mobdev4;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,14 +25,17 @@ import java.util.Locale;
 class CalendarAdapter extends ArrayAdapter<Object> {
     //helper classes to build up the list in a fancy way
     private static class WeekRow {
+        static final int ItemType = 0;
         String week;
         WeekRow(String week) { this.week = week; }
     }
 
     private static class DayRow {
+        static final int ItemType = 1;
         String day;
         DayRow(String day) { this.day = day; }
     }
+    private final int ClassItemType = 2;
 
     private final Context context;
     private final List<Object> items;
@@ -44,7 +46,7 @@ class CalendarAdapter extends ArrayAdapter<Object> {
         this.items = items;
     }
 
-    static CalendarAdapter get(Context context, ArrayList<UniClass> items)
+    static CalendarAdapter get(Context context, List<UniClass> items)
     {
         //first of all, sorting our data
         Collections.sort(items, new Comparator<UniClass>() {
@@ -54,7 +56,7 @@ class CalendarAdapter extends ArrayAdapter<Object> {
             }
         });
 
-        ArrayList<Object> processedItems = new ArrayList<Object>();
+        List<Object> processedItems = new ArrayList<>();
         int currWeek = -1;
         int currDay = -1;
         Calendar calendar = Calendar.getInstance();
@@ -84,6 +86,21 @@ class CalendarAdapter extends ArrayAdapter<Object> {
     }
 
     @Override
+    public int getViewTypeCount() { return 3; } //week, day and class types
+
+    //gonna help out the framework with deciding what views to forward through convertView
+    @Override
+    public int getItemViewType(int pos) {
+        Object item = items.get(pos);
+        if(item instanceof WeekRow)
+            return WeekRow.ItemType;
+        else if(item instanceof DayRow)
+            return DayRow.ItemType;
+        else
+            return ClassItemType;
+    }
+
+    @Override
     public boolean areAllItemsEnabled() {
         return false;
     }
@@ -95,25 +112,35 @@ class CalendarAdapter extends ArrayAdapter<Object> {
 
     @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view;
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         Object item = items.get(position);
-        if(item instanceof WeekRow)
+        View view = convertView;
+        int rowType = getItemViewType(position);
+        if(rowType == WeekRow.ItemType)
         {
-            view = inflater.inflate(R.layout.week_row, parent, false);
+            //avoiding unnecessary queries if we can, if not - then create new objects
+            if(view == null) {
+                LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.week_row, parent, false);
+            }
             TextView header = (TextView)view.findViewById(R.id.header);
             header.setText(((WeekRow)item).week);
         }
-        else if(item instanceof DayRow)
+        else if(rowType == DayRow.ItemType)
         {
-            view = inflater.inflate(R.layout.day_row, parent, false);
+            if(view == null) {
+                LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.day_row, parent, false);
+            }
             TextView header = (TextView)view.findViewById(R.id.header);
             header.setText(((DayRow)item).day);
         }
         else
         {
-            view = inflater.inflate(R.layout.class_row, parent, false);
+            if(view == null) {
+                LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.class_row, parent, false);
+            }
             TextView header = (TextView)view.findViewById(R.id.header);
             header.setText(item.toString());
         }

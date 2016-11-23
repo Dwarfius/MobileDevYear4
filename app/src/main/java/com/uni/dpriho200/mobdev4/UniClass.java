@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,13 +24,37 @@ class UniClass implements Parcelable {
     private static final String dayFormat = "yyyy-MM-dd'T'HH:mm:ss";
     private static final String groupFormat = "dd-MMM-yyyy";
 
-    private String description;
+    private static final String[] locPrefixes = {
+        "CEE",
+        "MS",
+        "W",
+        "M",
+        "A",
+        "H",
+        "B",
+        "C"
+    };
+
+    private static final LatLng[] locations = {
+        new LatLng(55.866109, -4.250205),
+        new LatLng(55.868481, -4.250827),
+        new LatLng(55.867196, -4.251079),
+        new LatLng(55.866946, -4.249979),
+        new LatLng(55.866738, -4.249142),
+        new LatLng(55.866268, -4.250832),
+        new LatLng(55.866409, -4.251615),
+        new LatLng(55.867664, -4.249212),
+    };
+    private static final LatLng defaultLoc = new LatLng(55.866500, -4.250382); //uni location
+
+    private String room, description;
     private Date start, end;
     private int id;
+    private LatLng location = defaultLoc;
 
     UniClass(JSONObject json) throws JSONException
     {
-        description = parseDescription(json.getString("text"));
+        parseDescription(json.getString("text"));
         id = Integer.parseInt(json.getString("id"));
 
         // The way they store the start-end data is a bit messed up
@@ -67,14 +93,24 @@ class UniClass implements Parcelable {
         }
     }
 
-    private String parseDescription(String desc)
+    // also sets the location
+    private void parseDescription(String desc)
     {
         desc = desc.replaceAll("(</?b>)", "");
         String[] lines = desc.split("(<br>)");
+
+        // first figuring out what are the coords of the building to go to for class
+        room = lines[2];
+        for(int i=0; i<locPrefixes.length; i++) {
+            if(room.startsWith(locPrefixes[i])) {
+                location = locations[i];
+                break;
+            }
+        }
+
         // description follows a specific format: Module\nCourse Codes\nRoom\nLecturer\nTime\Type
         // we're gonna keep only the things we need: Module, Room, Time, Type
-        desc = lines[0] + "\n" + lines[2] + "\n" + lines[5] + " " + lines[4];
-        return desc;
+        description = lines[0] + "\n" + room + "\n" + lines[5] + ", " + lines[4];
     }
 
     @Override
@@ -102,6 +138,8 @@ class UniClass implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeDoubleArray(new double[] { location.latitude, location.longitude });
+        dest.writeString(room);
         dest.writeString(description);
         dest.writeInt(id);
 
@@ -111,7 +149,10 @@ class UniClass implements Parcelable {
     }
 
     // "De-parcel object
-    UniClass(Parcel in) {
+    private UniClass(Parcel in) {
+        double[] coords = in.createDoubleArray();
+        location = new LatLng(coords[0], coords[1]);
+        room = in.readString();
         description = in.readString();
         id = in.readInt();
         try {
@@ -124,6 +165,10 @@ class UniClass implements Parcelable {
     Date getStart() {
         return start;
     }
+
+    LatLng getLocation() { return location; }
+
+    String getRoom() { return room; }
 
     int compareTo(UniClass other)
     {
