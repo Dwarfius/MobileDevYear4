@@ -118,8 +118,17 @@ class UniClass implements Parcelable {
         return description;
     }
 
+    int getId() { return id; }
+    Date getStart() { return start; }
+    LatLng getLocation() { return location; }
+    String getRoom() { return room; }
+
+    int compareTo(UniClass other)
+    {
+        return start.compareTo(other.getStart());
+    }
+
     // Parcelable implementation
-    // Creator
     public static final Parcelable.Creator CREATOR
             = new Parcelable.Creator() {
         public UniClass createFromParcel(Parcel in) {
@@ -148,7 +157,6 @@ class UniClass implements Parcelable {
         dest.writeString(formatter.format(end));
     }
 
-    // "De-parcel object
     private UniClass(Parcel in) {
         double[] coords = in.createDoubleArray();
         location = new LatLng(coords[0], coords[1]);
@@ -160,18 +168,5 @@ class UniClass implements Parcelable {
             start = formatter.parse(in.readString());
             end = formatter.parse(in.readString());
         } catch(Exception e) { Log.e("CW", e.toString()); }
-    }
-
-    Date getStart() {
-        return start;
-    }
-
-    LatLng getLocation() { return location; }
-
-    String getRoom() { return room; }
-
-    int compareTo(UniClass other)
-    {
-        return start.compareTo(other.getStart());
     }
 }

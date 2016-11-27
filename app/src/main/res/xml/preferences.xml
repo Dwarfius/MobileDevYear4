@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="System Colors">
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/weekHeader"
+            android:key="WeekBg"
+            android:title="Week"
+            android:summary="Background Color" />
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/dayHeader"
+            android:key="DayBg"
+            android:title="Day"
+            android:summary="Background Color" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Calendar Colors">
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/White"
+            android:key="LectureColor"
+            android:title="Lecture Background Color"
+            android:summary="Background Color" />
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/White"
+            android:key="SeminarColor"
+            android:title="Seminar Background Color"/>
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/White"
+            android:key="PracticalColor"
+            android:title="Practical Background Color"/>
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/White"
+            android:key="TutorialColor"
+            android:title="Tutorial Background Color"/>
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/White"
+            android:key="HolidayColor"
+            android:title="Tutorial Background Color"/>
+    </PreferenceCategory>
+</PreferenceScreen>

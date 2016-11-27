@@ -2,6 +2,7 @@ package com.uni.dpriho200.mobdev4;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.ApplicationInfo;
@@ -11,8 +12,15 @@ import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDialogFragment;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,7 +28,6 @@ import android.widget.Toast;
 import com.akexorcist.googledirection.DirectionCallback;
 import com.akexorcist.googledirection.GoogleDirection;
 import com.akexorcist.googledirection.model.Direction;
-import com.akexorcist.googledirection.model.Step;
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -44,11 +51,10 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
 
 public class DetailView extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener,
-        ResultCallback<LocationSettingsResult> {
+        ResultCallback<LocationSettingsResult>, NoteDialogInterface, ListView.OnItemClickListener {
 
     private static final int REQUEST_CHECK_SETTINGS = 1;
     private static final int NETWORK_CHECK_SETTINGS = 2;
@@ -56,36 +62,39 @@ public class DetailView extends AppCompatActivity implements OnMapReadyCallback,
     private String googleApiKey;
     private GoogleApiClient googleApiClient;
     private GoogleMap map;
+    private String user;
     private UniClass uniClass;
     private boolean requestingLocations;
     private LocationRequest locationRequest;
     private Polyline pathToTarget = null;
+    private NotesAdapter listAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_view);
 
+        //our data to fill out all the details
+        Intent intent = getIntent();
+        uniClass = intent.getParcelableExtra("Class");
+        user = intent.getStringExtra("User");
+        if(savedInstanceState != null)
+            requestingLocations = savedInstanceState.getBoolean("requestingLocations");
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Notes - " + user);
 
         try {
             ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
             googleApiKey = ai.metaData.getString("com.google.android.geo.API_KEY");
         } catch (Exception e) { Log.e("CW", "Couldn't read API key from metadata"); }
 
-        //our data to fill out all the details
-        Intent intent = getIntent();
-        uniClass = intent.getParcelableExtra("Class");
-
-        if(savedInstanceState != null)
-            requestingLocations = savedInstanceState.getBoolean("requestingLocations");
-
         // views initialization
-        List<Note> notes = new ArrayList<>();
-        notes.add(new Note("Title", "Desc"));
-        notes.add(new AlarmNote("Title", "Desc", new Date()));
+        List<Note> notes = NotesDB.select(uniClass.getId(), user);
         ListView notesView = (ListView)findViewById(R.id.listView);
-        notesView.setAdapter(new NotesAdapter(this, notes));
+        listAdapter = new NotesAdapter(this, notes);
+        notesView.setAdapter(listAdapter);
+        notesView.setOnItemClickListener(this);
 
         TextView title = (TextView)findViewById(R.id.title);
         title.setText(uniClass.toString());
@@ -112,10 +121,26 @@ public class DetailView extends AppCompatActivity implements OnMapReadyCallback,
     // Default action creates a new instance of the activity, which swaps out the intent
     // which I rely on to contain specific data
     @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_detail_view, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.add_note:
+                TypeDialog dialog = new TypeDialog();
+                Bundle bundle = new Bundle();
+                bundle.putInt("ClassId", uniClass.getId());
+                bundle.putString("UserId", user);
+                dialog.setArguments(bundle);
+                dialog.show(getSupportFragmentManager(), "Type");
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -164,7 +189,7 @@ public class DetailView extends AppCompatActivity implements OnMapReadyCallback,
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putBoolean("requestingLocations", requestingLocations);
+        savedInstanceState.putBoolean("requestingLocations", requestingLocations); // just to be safe
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -271,7 +296,32 @@ public class DetailView extends AppCompatActivity implements OnMapReadyCallback,
                         Log.e("CW", "Requesting directions failed: " + t.toString());
                     }
                 });
+    }
 
+    // NoteDialogInterface
+    @Override
+    public void onFinishedEditing(Note note) {
+        if(note.getId() == -1) {
+            NotesDB.insert(note);
+            listAdapter.add(note);
+        } else {
+            NotesDB.update(note);
+            listAdapter.notifyDataSetInvalidated();
+        }
+    }
+
+    // ListView.OnItemClickListener
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+        Note note = (Note)parent.getItemAtPosition(pos);
+        Bundle bundle = new Bundle();
+        bundle.putInt("ClassId", uniClass.getId());
+        bundle.putString("UserId", user);
+        bundle.putParcelable("Note", note);
+
+        AppCompatDialogFragment dialog = note instanceof AlarmNote ? new AlarmDialog() : new NoteDialog();
+        dialog.setArguments(bundle);
+        dialog.show(getSupportFragmentManager(), "Note");
     }
 
     // finally, our own methods

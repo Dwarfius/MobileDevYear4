@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Maps Location -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
@@ -29,6 +30,9 @@
         </activity>
         <activity android:name=".DetailView" android:label="Notes">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value="com.uni.dpriho200.mobdev4.CalendarView" />
+        </activity>
+        <activity android:name=".PrefsActivity" android:label="Preferences">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".CalendarView" />
         </activity>
     </application>
 

@@ -32,14 +32,14 @@ class NotesAdapter extends ArrayAdapter<Note> {
         View view = convertView;
         if(view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.note_row, parent, false);
+            view = inflater.inflate(R.layout.row_notes, parent, false);
         }
         Note item = notes.get(position);
         boolean isAlarm = item instanceof AlarmNote;
         ImageView imgView = (ImageView)view.findViewById(R.id.rowTypeImage);
         imgView.setImageResource(isAlarm ? R.drawable.icon_alarm : R.drawable.icon_note);
-        TextView titleView = (TextView)view.findViewById(R.id.title);
-        titleView.setText(item.getTitle());
+        TextView titleView = (TextView)view.findViewById(R.id.note);
+        titleView.setText(item.getNote());
         return view;
     }
 }

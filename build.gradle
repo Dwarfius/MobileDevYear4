@@ -15,6 +15,9 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        // jitpack compiles and serves sources from github on the fly, and provides the resulting aar/jar
+        // specifically, ColorPreferences
+        maven { url "https://jitpack.io" }
     }
 }
 

@@ -35,7 +35,7 @@ class CalendarAdapter extends ArrayAdapter<Object> {
         String day;
         DayRow(String day) { this.day = day; }
     }
-    private final int ClassItemType = 2;
+    private static final int ClassItemType = 2;
 
     private final Context context;
     private final List<Object> items;
@@ -121,7 +121,7 @@ class CalendarAdapter extends ArrayAdapter<Object> {
             //avoiding unnecessary queries if we can, if not - then create new objects
             if(view == null) {
                 LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.week_row, parent, false);
+                view = inflater.inflate(R.layout.row_week, parent, false);
             }
             TextView header = (TextView)view.findViewById(R.id.header);
             header.setText(((WeekRow)item).week);

@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_centerInParent="true"
-        android:id="@+id/linearLayout"
         android:focusable="true"
         android:focusableInTouchMode="true">
 
@@ -44,16 +43,22 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/paswField"
             android:inputType="textPassword"
             android:ems="10"
-            android:id="@+id/paswField"
             android:layout_gravity="center"
             android:hint="Password"/>
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rememberChkBox"
+            android:layout_gravity="center"
+            android:text="Remember Me?" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Log In"
             android:id="@+id/logInBtn"
+            android:text="Log In"
             android:layout_gravity="center" />
     </LinearLayout>
 </RelativeLayout>

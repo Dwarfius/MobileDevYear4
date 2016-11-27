@@ -26,5 +26,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.google.android.gms:play-services-maps:9.6.1'
     compile 'com.google.android.gms:play-services-location:9.6.1'
-    compile 'com.akexorcist:googledirectionlibrary:1.0.4' //https://github.com/akexorcist/Android-GoogleDirectionLibrary
+    // from https://github.com/akexorcist/Android-GoogleDirectionLibrary
+    compile 'com.akexorcist:googledirectionlibrary:1.0.4'
+    // from https://android-arsenal.com/details/1/4401
+    compile 'com.github.kizitonwose.colorpreference:core:1.0.2'
 }

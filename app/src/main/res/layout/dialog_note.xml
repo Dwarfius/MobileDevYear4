@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <com.uni.dpriho200.mobdev4.LinedEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:inputType="textMultiLine"
+        android:lines="4"
+        android:textAlignment="viewStart"
+        android:gravity="start"
+        android:scrollbars="vertical"
+        android:hint="Note..."
+        custom:underlineColor="#FFBBBBBB"/>
+</RelativeLayout>
