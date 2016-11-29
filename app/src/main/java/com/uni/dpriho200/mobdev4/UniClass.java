@@ -47,13 +47,12 @@ class UniClass implements Parcelable {
     };
     private static final LatLng defaultLoc = new LatLng(55.866500, -4.250382); //uni location
 
-    private String room, description;
+    private String room, description, type;
     private Date start, end;
     private int id;
     private LatLng location = defaultLoc;
 
-    UniClass(JSONObject json) throws JSONException
-    {
+    UniClass(JSONObject json) throws JSONException {
         parseDescription(json.getString("text"));
         id = Integer.parseInt(json.getString("id"));
 
@@ -94,8 +93,7 @@ class UniClass implements Parcelable {
     }
 
     // also sets the location
-    private void parseDescription(String desc)
-    {
+    private void parseDescription(String desc) {
         desc = desc.replaceAll("(</?b>)", "");
         String[] lines = desc.split("(<br>)");
 
@@ -110,7 +108,8 @@ class UniClass implements Parcelable {
 
         // description follows a specific format: Module\nCourse Codes\nRoom\nLecturer\nTime\Type
         // we're gonna keep only the things we need: Module, Room, Time, Type
-        description = lines[0] + "\n" + room + "\n" + lines[5] + ", " + lines[4];
+        type = lines[5].trim();
+        description = lines[0] + "\n" + room + "\n" + type + ", " + lines[4];
     }
 
     @Override
@@ -122,6 +121,7 @@ class UniClass implements Parcelable {
     Date getStart() { return start; }
     LatLng getLocation() { return location; }
     String getRoom() { return room; }
+    String getType() { return type; }
 
     int compareTo(UniClass other)
     {
@@ -134,7 +134,6 @@ class UniClass implements Parcelable {
         public UniClass createFromParcel(Parcel in) {
             return new UniClass(in);
         }
-
         public UniClass[] newArray(int size) {
             return new UniClass[size];
         }
@@ -150,6 +149,7 @@ class UniClass implements Parcelable {
         dest.writeDoubleArray(new double[] { location.latitude, location.longitude });
         dest.writeString(room);
         dest.writeString(description);
+        dest.writeString(type);
         dest.writeInt(id);
 
         DateFormat formatter = new SimpleDateFormat(dayFormat, Locale.US);
@@ -162,6 +162,7 @@ class UniClass implements Parcelable {
         location = new LatLng(coords[0], coords[1]);
         room = in.readString();
         description = in.readString();
+        type = in.readString();
         id = in.readInt();
         try {
             DateFormat formatter = new SimpleDateFormat(dayFormat, Locale.US);

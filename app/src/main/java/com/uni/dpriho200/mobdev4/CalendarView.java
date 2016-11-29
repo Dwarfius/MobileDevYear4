@@ -1,9 +1,13 @@
 package com.uni.dpriho200.mobdev4;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,10 +20,9 @@ import com.kizitonwose.colorpreference.ColorShape;
 
 import java.util.ArrayList;
 
-public class CalendarView extends AppCompatActivity implements AdapterView.OnItemClickListener,
-        ColorDialog.OnColorSelectedListener {
+public class CalendarView extends AppCompatActivity implements AdapterView.OnItemClickListener {
     String user;
-    ArrayList<UniClass> classes;
+    CalendarAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,17 +32,24 @@ public class CalendarView extends AppCompatActivity implements AdapterView.OnIte
         NotesDB.init(this);
 
         Intent intent = getIntent();
-        classes = intent.getParcelableArrayListExtra("Classes");
+        ArrayList<UniClass> classes = intent.getParcelableArrayListExtra("Classes");
         user = intent.getStringExtra("User");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Calendar View - " + user);
 
-        CalendarAdapter adapter = CalendarAdapter.get(this, classes);
+        adapter = CalendarAdapter.get(this, classes);
 
         ListView list = (ListView) findViewById(R.id.listView);
         list.setAdapter(adapter);
         list.setOnItemClickListener(this);
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -59,12 +69,6 @@ public class CalendarView extends AppCompatActivity implements AdapterView.OnIte
             case R.id.action_settings:
                 Intent prefsIntent = new Intent(this, PrefsActivity.class);
                 startActivity(prefsIntent);
-                /*
-                new ColorDialog.Builder(this)
-                        .setColorShape(ColorShape.CIRCLE)
-                        .setSelectedColor(Color.GREEN)
-                        .setTag("TAG")
-                        .show();*/
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -77,15 +81,5 @@ public class CalendarView extends AppCompatActivity implements AdapterView.OnIte
         intent.putExtra("Class", (UniClass)parent.getItemAtPosition(position));
         intent.putExtra("User", user);
         startActivity(intent);
-    }
-
-    // ColorDialog.OnColorSelectedListener
-    @Override
-    public void onColorSelected(int newColor, String tag) {
-        switch (tag){
-            case "TAG":
-                //change the toolbar color with newColor
-                break;
-        }
     }
 }

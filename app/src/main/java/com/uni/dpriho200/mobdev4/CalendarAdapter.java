@@ -1,7 +1,12 @@
 package com.uni.dpriho200.mobdev4;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,7 +93,7 @@ class CalendarAdapter extends ArrayAdapter<Object> {
     @Override
     public int getViewTypeCount() { return 3; } //week, day and class types
 
-    //gonna help out the framework with deciding what views to forward through convertView
+    // gonna help out the framework with deciding what views to forward through convertView
     @Override
     public int getItemViewType(int pos) {
         Object item = items.get(pos);
@@ -110,12 +115,13 @@ class CalendarAdapter extends ArrayAdapter<Object> {
         return items.get(position) instanceof UniClass;
     }
 
-    @NonNull
     @Override
+    @NonNull
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         Object item = items.get(position);
         View view = convertView;
         int rowType = getItemViewType(position);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         if(rowType == WeekRow.ItemType)
         {
             //avoiding unnecessary queries if we can, if not - then create new objects
@@ -125,6 +131,14 @@ class CalendarAdapter extends ArrayAdapter<Object> {
             }
             TextView header = (TextView)view.findViewById(R.id.header);
             header.setText(((WeekRow)item).week);
+            int color = prefs.getInt("WeekBg", -1);
+            if(color == -1) {
+                if(Build.VERSION.SDK_INT >= 23)
+                    color = getContext().getResources().getColor(R.color.weekHeader, null);
+                else
+                    color = getContext().getResources().getColor(R.color.weekHeader);
+            }
+            view.setBackgroundColor(color);
         }
         else if(rowType == DayRow.ItemType)
         {
@@ -134,6 +148,14 @@ class CalendarAdapter extends ArrayAdapter<Object> {
             }
             TextView header = (TextView)view.findViewById(R.id.header);
             header.setText(((DayRow)item).day);
+            int color = prefs.getInt("DayBg", -1);
+            if(color == -1) {
+                if(Build.VERSION.SDK_INT >= 23)
+                    color = getContext().getResources().getColor(R.color.dayHeader, null);
+                else
+                    color = getContext().getResources().getColor(R.color.dayHeader);
+            }
+            view.setBackgroundColor(color);
         }
         else
         {
@@ -143,6 +165,15 @@ class CalendarAdapter extends ArrayAdapter<Object> {
             }
             TextView header = (TextView)view.findViewById(R.id.header);
             header.setText(item.toString());
+            String type = ((UniClass)item).getType();
+            int color = prefs.getInt(type + "Color", -1);
+            if(color == -1) {
+                if(Build.VERSION.SDK_INT >= 23)
+                    color = getContext().getResources().getColor(R.color.White, null);
+                else
+                    color = getContext().getResources().getColor(R.color.White);
+            }
+            view.setBackgroundColor(color);
         }
         return view;
     }
