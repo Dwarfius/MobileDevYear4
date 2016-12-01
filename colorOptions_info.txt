@@ -1,0 +1,39 @@
+Thanks to discovering a list of X11 colors (which are in res/values/colors.xml)
+I didn't have to do any manual work - used regex tools (http://regexr.com). Here's how it was done:
+To parse the initial values of form:
+<color name="White">#FFFFFF</color>
+    <color name="Ivory">#FFFFF0</color>
+    <color name="LightYellow">#FFFFE0</color>
+    <color name="Yellow">#FFFF00</color>
+...
+	<color name="Navy">#000080</color>
+    <color name="Black">#000000</color> //no end line
+
+I used this regex for cutting out the names with
+<.+?>+?\s*
+and replaced the findings with empty string ""
+
+It looks for opening xml tags, consuming everything between < and > and the extra whitespaces, if there are
+Then, it consumes everything after < of closing tag, and the newline and 3 whitespaces after it.
+Note: there can be 0 whitespaces because of the last entry not having anything after it.
+Lazy modifiers are used to prevent it from eating the actual values (cause the first group can eat
+the entire data-set). Not / was used to prevent matching of the closing tags - even though I could've
+
+This leaves us with values in the form of:
+#FFFFFF#FFFFF0#FFFFE0#FFFF00...#000080#000000
+
+Now that the actual values are done, can just replace it with the regex of:
+#\w*
+with replacement format of:
+<item>$&</item>\n
+which gives us
+<item>#FFFFFF</item>
+<item>#FFFFF0</item>
+<item>#FFFFE0</item>
+<item>#FFFF00</item>
+...
+<item>#000080</item>
+<item>#000000</item>
+
+Now it's ready, can be copy-pasted to res/values/colorOptions.xml. Some values will be discarded to 
+cut down the color count (139 is a bit too much)

@@ -47,7 +47,7 @@ class NotesDB extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        Log.e("CW", "onUpgrade NYI");
     }
 
     // The purpose of the helper, originally, is just to help with opening and upgrading of the db,
@@ -113,5 +113,15 @@ class NotesDB extends SQLiteOpenHelper {
         }
         cursor.close();
         return notes;
+    }
+
+    static int count(int classId, String userId)
+    {
+        Cursor cursor = instance.getWritableDatabase().rawQuery("SELECT COUNT(*) FROM " + tableName +
+                " WHERE ClassId = " + classId + " AND UserId = ?", new String[] { userId });
+        cursor.moveToNext();
+        int count = cursor.getInt(0);
+        cursor.close();
+        return count;
     }
 }

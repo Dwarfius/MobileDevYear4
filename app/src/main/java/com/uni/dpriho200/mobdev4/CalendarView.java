@@ -29,8 +29,6 @@ public class CalendarView extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_view);
 
-        NotesDB.init(this);
-
         Intent intent = getIntent();
         ArrayList<UniClass> classes = intent.getParcelableArrayListExtra("Classes");
         user = intent.getStringExtra("User");
@@ -46,15 +44,21 @@ public class CalendarView extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
+
+        // since we got back from the DetailView, notes might have been added/deleted - have to update
+        int uniClassId = getIntent().getIntExtra("OpenedClass", 0);
+        if(uniClassId != 0) { // check to see if we're actully from DetailView
+            UniClass uniClass = adapter.findById(uniClassId);
+            uniClass.setNotesCount(NotesDB.count(uniClass.getId(), user));
+        }
+
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_calendar_view, menu);
         return true;
@@ -77,8 +81,13 @@ public class CalendarView extends AppCompatActivity implements AdapterView.OnIte
     // AdapterView.OnItemClickListener
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        UniClass uniClass = (UniClass)parent.getItemAtPosition(position);
+
+        // marking what class was picked so that we can update info in onResume
+        getIntent().putExtra("OpenedClass", uniClass.getId());
+
         Intent intent = new Intent(this, DetailView.class);
-        intent.putExtra("Class", (UniClass)parent.getItemAtPosition(position));
+        intent.putExtra("Class", uniClass);
         intent.putExtra("User", user);
         startActivity(intent);
     }

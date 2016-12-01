@@ -53,6 +53,8 @@ public class LogIn extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
 
+        NotesDB.init(this);
+
         userField = (EditText)findViewById(R.id.userField);
         paswField = (EditText)findViewById(R.id.paswField);
         rememberChkBox = (CheckBox)findViewById(R.id.rememberChkBox);
@@ -141,7 +143,7 @@ public class LogIn extends AppCompatActivity
                             } finally {
                                 conn.disconnect();
                             }
-                        } catch(Exception e) { Log.e("CW", e.toString()); }
+                        } catch(Exception e) { Log.e("CW", e.toString(), e); }
                     }
                 });
                 t.start();
@@ -167,11 +169,11 @@ public class LogIn extends AppCompatActivity
                                     userField.setText(reader.readLine());
                                     paswField.setText(reader.readLine());
                                     btn.callOnClick();
-                                } catch(Exception e) { Log.e("CW", e.toString()); }
+                                } catch(Exception e) { Log.e("CW", e.toString(), e); }
                             }
                         }
                     });
-                } catch(Exception e) { Log.e("CW", e.toString()); }
+                } catch(Exception e) { Log.e("CW", e.toString(), e); }
             }
         });
         t.start();
@@ -186,18 +188,23 @@ public class LogIn extends AppCompatActivity
 
     private ArrayList<UniClass> parseCalendar(String html)
     {
+        Log.v("CW", "Raw login response: " + html);
         //since it's not part of the HTML's body, we have to manually parse it out
         String startMarker = "v.events.list = ";
         int start = html.indexOf(startMarker);
         int end = html.indexOf("v.links.list = [];");
         String data = html.substring(start + startMarker.length(), end - 3); //ends with "; \n", getting rid of it
+        Log.v("CW", "Parsed out JSON: " + data);
         try {
             JSONArray array = new JSONArray(data);
             ArrayList<UniClass> classes = new ArrayList<>();
-            for(int i=0; i<array.length(); i++)
-                classes.add(new UniClass((JSONObject) array.get(i)));
+            for(int i=0; i<array.length(); i++) {
+                UniClass uniClass = new UniClass((JSONObject)array.get(i));
+                uniClass.setNotesCount(NotesDB.count(uniClass.getId(), userField.getText().toString()));
+                classes.add(uniClass);
+            }
             return classes;
-        } catch(Exception e) { Log.e("CW", e.toString()); }
+        } catch(Exception e) { Log.e("CW", e.toString(), e); }
         return null;
     }
 
@@ -210,7 +217,7 @@ public class LogIn extends AppCompatActivity
             while ((length = stream.read(buffer)) != -1)
                 output.write(buffer, 0, length);
             result = output.toString("UTF-8");
-        } catch(Exception e) { Log.e("CW", e.toString()); }
+        } catch(Exception e) { Log.e("CW", e.toString(), e); }
         return result;
     }
 

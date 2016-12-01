@@ -2,15 +2,16 @@ package com.uni.dpriho200.mobdev4;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -66,23 +67,24 @@ class CalendarAdapter extends ArrayAdapter<Object> {
         int currDay = -1;
         Calendar calendar = Calendar.getInstance();
         DateFormat groupFormatter = new SimpleDateFormat("d MMMM, yyyy", Locale.US);
-        DateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
+        DateFormat dayFormat = new SimpleDateFormat("EEEE, d", Locale.US);
         for(UniClass uniClass : items)
         {
             Date start = uniClass.getStart();
             calendar.setTime(start);
 
-            int week = calendar.get(Calendar.WEEK_OF_YEAR); //need of_year to avoid split on month transition
-            if(week != currWeek)
+            int week = calendar.get(Calendar.WEEK_OF_YEAR); // need week_of_year to avoid split on month transition
+            if(week != currWeek) // if new week - add week header
             {
                 processedItems.add(new WeekRow(groupFormatter.format(start)));
                 currWeek = week;
             }
 
             int day = calendar.get(Calendar.DAY_OF_WEEK);
-            if(day != currDay)
+            if(day != currDay) // if new day - add day header
             {
-                processedItems.add(new DayRow(dayFormat.format(start)));
+                String label = dayFormat.format(start) + getDaySuffix(calendar.get(Calendar.DAY_OF_MONTH));
+                processedItems.add(new DayRow(label));
                 currDay = day;
             }
             processedItems.add(uniClass);
@@ -131,50 +133,83 @@ class CalendarAdapter extends ArrayAdapter<Object> {
             }
             TextView header = (TextView)view.findViewById(R.id.header);
             header.setText(((WeekRow)item).week);
-            int color = prefs.getInt("WeekBg", -1);
-            if(color == -1) {
-                if(Build.VERSION.SDK_INT >= 23)
-                    color = getContext().getResources().getColor(R.color.weekHeader, null);
-                else
-                    color = getContext().getResources().getColor(R.color.weekHeader);
-            }
+
+            int color = getColorFromPrefs(prefs, "WeekBg", R.color.weekHeader);
             view.setBackgroundColor(color);
+            color = getColorFromPrefs(prefs, "WeekTextColor", R.color.White);
+            header.setTextColor(color);
         }
         else if(rowType == DayRow.ItemType)
         {
             if(view == null) {
                 LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.day_row, parent, false);
+                view = inflater.inflate(R.layout.row_day, parent, false);
             }
             TextView header = (TextView)view.findViewById(R.id.header);
             header.setText(((DayRow)item).day);
-            int color = prefs.getInt("DayBg", -1);
-            if(color == -1) {
-                if(Build.VERSION.SDK_INT >= 23)
-                    color = getContext().getResources().getColor(R.color.dayHeader, null);
-                else
-                    color = getContext().getResources().getColor(R.color.dayHeader);
-            }
+
+            int color = getColorFromPrefs(prefs, "DayBg", R.color.dayHeader);
             view.setBackgroundColor(color);
+            color = getColorFromPrefs(prefs, "DayTextColor", R.color.White);
+            header.setTextColor(color);
         }
         else
         {
             if(view == null) {
                 LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.class_row, parent, false);
+                view = inflater.inflate(R.layout.row_class, parent, false);
             }
+            UniClass uniClass = (UniClass)item;
             TextView header = (TextView)view.findViewById(R.id.header);
-            header.setText(item.toString());
-            String type = ((UniClass)item).getType();
-            int color = prefs.getInt(type + "Color", -1);
-            if(color == -1) {
-                if(Build.VERSION.SDK_INT >= 23)
-                    color = getContext().getResources().getColor(R.color.White, null);
-                else
-                    color = getContext().getResources().getColor(R.color.White);
-            }
+            header.setText(uniClass.toString());
+
+            String type = uniClass.getType();
+            int textColor = getColorFromPrefs(prefs, type + "TextColor", R.color.Black);
+
+            View container = view.findViewById(R.id.notesContainer);
+            if(uniClass.getNotesCount() > 0) {
+                container.setVisibility(View.VISIBLE);
+                TextView notesCountLbl = (TextView)view.findViewById(R.id.notesCount);
+                notesCountLbl.setText(Integer.toString(uniClass.getNotesCount()));
+
+                notesCountLbl.setTextColor(textColor);
+                ((ImageView)view.findViewById(R.id.notesIcon)).setColorFilter(textColor);
+            } else
+                container.setVisibility(View.GONE);
+
+            int color = getColorFromPrefs(prefs, type + "Color", R.color.White);
             view.setBackgroundColor(color);
+            header.setTextColor(textColor);
         }
         return view;
+    }
+
+    // utility methods
+    private int getColorFromPrefs(SharedPreferences prefs, String prefId, @ColorRes int defaultColorId) {
+        int color = prefs.getInt(prefId, Integer.MAX_VALUE);
+        if(color == Integer.MAX_VALUE) {
+            if(Build.VERSION.SDK_INT >= 23)
+                color = getContext().getResources().getColor(defaultColorId, null);
+            else
+                color = getContext().getResources().getColor(defaultColorId);
+        }
+        return color;
+    }
+
+    private static String getDaySuffix(int day) {
+        switch (day % 10){
+            case 1: return "st";
+            case 2: return "nd";
+            case 3: return "rd";
+            default: return "th";
+        }
+    }
+
+    UniClass findById(int id) {
+        for(Object o: items) {
+            if(o instanceof UniClass && ((UniClass) o).getId() == id)
+                return (UniClass) o;
+        }
+        return null;
     }
 }

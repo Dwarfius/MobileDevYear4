@@ -1,38 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="System Colors">
         <com.kizitonwose.colorpreference.ColorPreference
             android:defaultValue="@color/weekHeader"
             android:key="WeekBg"
             android:title="Week"
-            android:summary="Background Color" />
+            android:summary="Background Color"
+            app:colorChoices="@array/colorOptions"
+            app:numColumns="8"/>
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/White"
+            android:key="WeekTextColor"
+            android:title="Week"
+            android:summary="Text Color"
+            app:colorChoices="@array/colorOptions"
+            app:numColumns="8"/>
         <com.kizitonwose.colorpreference.ColorPreference
             android:defaultValue="@color/dayHeader"
             android:key="DayBg"
             android:title="Day"
-            android:summary="Background Color" />
+            android:summary="Background Color"
+            app:colorChoices="@array/colorOptions"
+            app:numColumns="8"/>
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/White"
+            android:key="DayTextColor"
+            android:title="Day"
+            android:summary="Text Color"
+            app:colorChoices="@array/colorOptions"
+            app:numColumns="8"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="Calendar Colors">
         <com.kizitonwose.colorpreference.ColorPreference
             android:defaultValue="@color/White"
             android:key="LectureColor"
-            android:title="Lecture Background Color"
-            android:summary="Background Color" />
+            android:title="Lecture"
+            android:summary="Background Color"
+            app:colorChoices="@array/colorOptions"
+            app:numColumns="8"/>
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/Black"
+            android:key="LectureTextColor"
+            android:title="Lecture"
+            android:summary="Text Color"
+            app:colorChoices="@array/colorOptions"
+            app:numColumns="8"/>
         <com.kizitonwose.colorpreference.ColorPreference
             android:defaultValue="@color/White"
             android:key="SeminarColor"
-            android:title="Seminar Background Color"/>
+            android:title="Seminar"
+            android:summary="Background Color"
+            app:colorChoices="@array/colorOptions"
+            app:numColumns="8"/>
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/Black"
+            android:key="SeminarTextColor"
+            android:title="Seminar"
+            android:summary="Text Color"
+            app:colorChoices="@array/colorOptions"
+            app:numColumns="8"/>
         <com.kizitonwose.colorpreference.ColorPreference
             android:defaultValue="@color/White"
             android:key="PracticalColor"
-            android:title="Practical Background Color"/>
+            android:title="Practical"
+            android:summary="Background Color"
+            app:colorChoices="@array/colorOptions"
+            app:numColumns="8"/>
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/Black"
+            android:key="PracticalTextColor"
+            android:title="Practical"
+            android:summary="Text Color"
+            app:colorChoices="@array/colorOptions"
+            app:numColumns="8"/>
         <com.kizitonwose.colorpreference.ColorPreference
             android:defaultValue="@color/White"
             android:key="TutorialColor"
-            android:title="Tutorial Background Color"/>
+            android:title="Tutorial"
+            android:summary="Background Color"
+            app:colorChoices="@array/colorOptions"
+            app:numColumns="8"/>
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/Black"
+            android:key="TutorialTextColor"
+            android:title="Tutorial"
+            android:summary="Text Color"
+            app:colorChoices="@array/colorOptions"
+            app:numColumns="8"/>
         <com.kizitonwose.colorpreference.ColorPreference
             android:defaultValue="@color/White"
-            android:key="HolidayColor"
-            android:title="Tutorial Background Color"/>
+            android:key="Global EventColor"
+            android:title="Global Event"
+            android:summary="Background Color"
+            app:colorChoices="@array/colorOptions"
+            app:numColumns="8"/>
+        <com.kizitonwose.colorpreference.ColorPreference
+            android:defaultValue="@color/Black"
+            android:key="Global EventTextColor"
+            android:title="Global Event"
+            android:summary="Text Color"
+            app:colorChoices="@array/colorOptions"
+            app:numColumns="8"/>
     </PreferenceCategory>
 </PreferenceScreen>

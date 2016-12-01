@@ -51,6 +51,7 @@ class UniClass implements Parcelable {
     private Date start, end;
     private int id;
     private LatLng location = defaultLoc;
+    private int notesCount = 0;
 
     UniClass(JSONObject json) throws JSONException {
         parseDescription(json.getString("text"));
@@ -97,19 +98,26 @@ class UniClass implements Parcelable {
         desc = desc.replaceAll("(</?b>)", "");
         String[] lines = desc.split("(<br>)");
 
-        // first figuring out what are the coords of the building to go to for class
-        room = lines[2];
-        for(int i=0; i<locPrefixes.length; i++) {
-            if(room.startsWith(locPrefixes[i])) {
-                location = locations[i];
-                break;
+        // first have to check if it's a global event or not -
+        if(lines[0].equals("Global Event")) {
+            type = lines[0];
+            room = lines[1]; //there might be a room or not
+            description = type + "\n" + (room.isEmpty() ? room + "\n" : "") + lines[3];
+        } else {
+            // first figuring out what are the coords of the building to go to for class
+            room = lines[2];
+            for (int i = 0; i < locPrefixes.length; i++) {
+                if (room.startsWith(locPrefixes[i])) {
+                    location = locations[i];
+                    break;
+                }
             }
-        }
 
-        // description follows a specific format: Module\nCourse Codes\nRoom\nLecturer\nTime\Type
-        // we're gonna keep only the things we need: Module, Room, Time, Type
-        type = lines[5].trim();
-        description = lines[0] + "\n" + room + "\n" + type + ", " + lines[4];
+            // description follows a specific format: Module\nCourse Codes\nRoom\nLecturer\nTime\Type
+            // we're gonna keep only the things we need: Module, Room, Time, Type
+            type = lines[5].trim();
+            description = lines[0] + "\n" + room + "\n" + type + ", " + lines[4];
+        }
     }
 
     @Override
@@ -122,6 +130,9 @@ class UniClass implements Parcelable {
     LatLng getLocation() { return location; }
     String getRoom() { return room; }
     String getType() { return type; }
+    int getNotesCount() { return notesCount; }
+
+    void setNotesCount(int val) { notesCount = val; }
 
     int compareTo(UniClass other)
     {
@@ -151,6 +162,7 @@ class UniClass implements Parcelable {
         dest.writeString(description);
         dest.writeString(type);
         dest.writeInt(id);
+        dest.writeInt(notesCount);
 
         DateFormat formatter = new SimpleDateFormat(dayFormat, Locale.US);
         dest.writeString(formatter.format(start));
@@ -164,6 +176,7 @@ class UniClass implements Parcelable {
         description = in.readString();
         type = in.readString();
         id = in.readInt();
+        notesCount = in.readInt();
         try {
             DateFormat formatter = new SimpleDateFormat(dayFormat, Locale.US);
             start = formatter.parse(in.readString());
