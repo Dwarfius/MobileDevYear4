@@ -12,7 +12,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -21,19 +21,25 @@
         <activity android:name=".LogIn" android:label="GCU Pal">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CalendarView" android:label="Calendar View">
-            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value="com.uni.dpriho200.mobdev4.LogIn" />
+        <activity android:name=".CalendarView" android:label="Calendar View" android:parentActivityName=".LogIn">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".LogIn" />
         </activity>
-        <activity android:name=".DetailView" android:label="Notes">
-            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value="com.uni.dpriho200.mobdev4.CalendarView" />
-        </activity>
-        <activity android:name=".PrefsActivity" android:label="Preferences">
+        <activity android:name=".DetailView" android:label="Notes" android:parentActivityName=".CalendarView">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".CalendarView" />
         </activity>
+        <activity android:name=".PrefsActivity" android:label="Preferences" android:parentActivityName=".CalendarView">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".CalendarView" />
+        </activity>
+
+        <receiver android:name=".NoteAlarmsManager">
+            <intent-filter>
+                <action android:name="com.uni.dpriho200.mobdev4.DISPLAY_NOTIFICATION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

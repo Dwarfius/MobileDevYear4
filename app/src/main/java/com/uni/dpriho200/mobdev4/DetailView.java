@@ -2,7 +2,6 @@ package com.uni.dpriho200.mobdev4;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.ApplicationInfo;
@@ -10,17 +9,16 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialogFragment;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,10 +72,11 @@ public class DetailView extends AppCompatActivity implements OnMapReadyCallback,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_view);
 
-        //our data to fill out all the details
+        // our data to fill out all the details
         Intent intent = getIntent();
         uniClass = intent.getParcelableExtra("Class");
         user = intent.getStringExtra("User");
+
         if(savedInstanceState != null)
             requestingLocations = savedInstanceState.getBoolean("requestingLocations");
 
@@ -115,6 +114,18 @@ public class DetailView extends AppCompatActivity implements OnMapReadyCallback,
                     .addApi(LocationServices.API)
                     .build();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putBoolean("requestingLocations", requestingLocations); // just to be safe
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.i("CW", "Activity destroyed");
+        super.onDestroy();
     }
 
     // Need to override the default action in order to retain the activity stack
@@ -185,12 +196,6 @@ public class DetailView extends AppCompatActivity implements OnMapReadyCallback,
                     googleApiClient.connect();
                 break;
         }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putBoolean("requestingLocations", requestingLocations); // just to be safe
-        super.onSaveInstanceState(savedInstanceState);
     }
 
     // GoogleApiClient.ConnectionCallbacks
@@ -308,6 +313,17 @@ public class DetailView extends AppCompatActivity implements OnMapReadyCallback,
             NotesDB.update(note);
             listAdapter.notifyDataSetInvalidated();
         }
+        // create or reschedule, even it's the same
+        NoteAlarmsManager.createAlarm((AlarmNote)note, this);
+    }
+
+    @Override
+    public void onDeleted(Note note) {
+        NotesDB.delete(note);
+        listAdapter.remove(note);
+
+        if(note instanceof AlarmNote)
+            NoteAlarmsManager.cancelAlarm((AlarmNote)note, this);
     }
 
     // ListView.OnItemClickListener

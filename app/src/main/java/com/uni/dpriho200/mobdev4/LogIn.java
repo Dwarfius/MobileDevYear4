@@ -1,8 +1,9 @@
 package com.uni.dpriho200.mobdev4;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.renderscript.ScriptGroup;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -66,6 +67,23 @@ public class LogIn extends AppCompatActivity
         CookieManager cookieManager = new CookieManager();
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
+
+        final AlarmNote note = getIntent().getParcelableExtra("AlarmTriggerNote");
+        if(note != null) {
+            Log.i("CW", "Activity received new intent: " + note.getId());
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Note Alarm!");
+            builder.setMessage(note.getUserId() + ": " + note.getNote());
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    // try to log in after reading the notification
+                    if(userField.getText().length() > 0 && paswField.getText().length() > 0)
+                        btn.callOnClick();
+                }
+            });
+            builder.show();
+        }
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,7 +186,8 @@ public class LogIn extends AppCompatActivity
                                     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
                                     userField.setText(reader.readLine());
                                     paswField.setText(reader.readLine());
-                                    btn.callOnClick();
+                                    if(note == null) // if we received the notification - don't auto-login
+                                        btn.callOnClick();
                                 } catch(Exception e) { Log.e("CW", e.toString(), e); }
                             }
                         }

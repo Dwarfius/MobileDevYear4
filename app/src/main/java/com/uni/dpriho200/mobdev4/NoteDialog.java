@@ -18,6 +18,7 @@ import android.widget.EditText;
 
 interface NoteDialogInterface {
     void onFinishedEditing(Note note);
+    void onDeleted(Note note);
 }
 
 public class NoteDialog extends AppCompatDialogFragment {
@@ -29,7 +30,7 @@ public class NoteDialog extends AppCompatDialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         final Bundle extraInfo = getArguments();
-        Note passedNote = extraInfo.getParcelable("Note");
+        final Note passedNote = extraInfo.getParcelable("Note");
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog_note, null);
@@ -54,7 +55,15 @@ public class NoteDialog extends AppCompatDialogFragment {
                 listener.onFinishedEditing(note);
             }
         });
-        builder.setNegativeButton("Cancel", null);
+        builder.setNeutralButton("Cancel", null);
+        if(passedNote != null) {
+            builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    listener.onDeleted(passedNote);
+                }
+            });
+        }
 
         // Dialog windows usually don't move on keyboard reveal, changing this here
         Dialog dialog = builder.create();

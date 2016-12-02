@@ -1,6 +1,5 @@
 package com.uni.dpriho200.mobdev4;
 
-import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

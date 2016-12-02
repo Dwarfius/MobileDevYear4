@@ -35,7 +35,7 @@ public class AlarmDialog extends AppCompatDialogFragment implements TimePicker.O
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         final Bundle extraInfo = getArguments();
-        AlarmNote passedNote = extraInfo.getParcelable("Note");
+        final AlarmNote passedNote = extraInfo.getParcelable("Note");
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View v = inflater.inflate(R.layout.dialog_alarm, null);
@@ -82,7 +82,15 @@ public class AlarmDialog extends AppCompatDialogFragment implements TimePicker.O
                 listener.onFinishedEditing(note);
             }
         });
-        builder.setNegativeButton("Cancel", null);
+        builder.setNeutralButton("Cancel", null);
+        if(passedNote != null) {
+            builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    listener.onDeleted(passedNote);
+                }
+            });
+        }
 
         doneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
