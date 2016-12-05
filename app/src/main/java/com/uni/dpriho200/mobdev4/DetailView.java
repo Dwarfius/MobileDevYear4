@@ -128,9 +128,6 @@ public class DetailView extends AppCompatActivity implements OnMapReadyCallback,
         super.onDestroy();
     }
 
-    // Need to override the default action in order to retain the activity stack
-    // Default action creates a new instance of the activity, which swaps out the intent
-    // which I rely on to contain specific data
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -142,6 +139,9 @@ public class DetailView extends AppCompatActivity implements OnMapReadyCallback,
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            // Need to override the default action in order to retain the activity stack
+            // Default action creates a new instance of the activity, which swaps out the intent
+            // which I rely on to contain specific data
             case android.R.id.home:
                 finish();
                 return true;

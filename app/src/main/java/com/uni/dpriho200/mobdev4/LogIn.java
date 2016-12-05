@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -203,6 +206,31 @@ public class LogIn extends AppCompatActivity
         userField.setText("");
         paswField.setText("");
         super.onResume();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_login_view, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.about:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("About GCU Pal");
+                builder.setMessage("Welcome to GCU Pal!\n\nThis is an unofficial calendar app with " +
+                        "diary functionality - it displays your university schedule and allows you " +
+                        "to save notes and set up alarms.\n\nTo use the application, please log in " +
+                        "with your student account.");
+                builder.setPositiveButton("OK", null);
+                builder.show();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private ArrayList<UniClass> parseCalendar(String html)
