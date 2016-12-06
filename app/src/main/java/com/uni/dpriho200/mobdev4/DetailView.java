@@ -314,7 +314,8 @@ public class DetailView extends AppCompatActivity implements OnMapReadyCallback,
             listAdapter.notifyDataSetInvalidated();
         }
         // create or reschedule, even it's the same
-        NoteAlarmsManager.createAlarm((AlarmNote)note, this);
+        if(note instanceof AlarmNote)
+            NoteAlarmsManager.createAlarm((AlarmNote)note, this);
     }
 
     @Override
