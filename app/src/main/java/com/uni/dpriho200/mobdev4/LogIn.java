@@ -137,7 +137,7 @@ public class LogIn extends AppCompatActivity
                                     // Now that we've logged in - following the redirect to the calendar page
                                     String redirLoc = conn.getHeaderField("location");
                                     conn = (HttpURLConnection)new URL(host + redirLoc).openConnection();
-                                    conn.setRequestProperty("Cookie", serializeAllCookies()); //cookie was auto-added to the CookieStorage, so just reserealize all of them
+                                    conn.setRequestProperty("Cookie", serializeAllCookies()); //cookie was auto-added to the CookieStorage, so just reserialize all of them
                                     responseCode = conn.getResponseCode();
 
                                     //now that we're at the right place, parse out the calendar data
@@ -239,7 +239,7 @@ public class LogIn extends AppCompatActivity
         //since it's not part of the HTML's body, we have to manually parse it out
         String startMarker = "v.events.list = ";
         int start = html.indexOf(startMarker);
-        int end = html.indexOf("v.links.list = [];");
+        int end = html.indexOf("v.links.list = ");
         String data = html.substring(start + startMarker.length(), end - 3); //ends with "; \n", getting rid of it
         Log.v("CW", "Parsed out JSON: " + data);
         try {
