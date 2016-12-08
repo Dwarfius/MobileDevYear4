@@ -126,11 +126,6 @@ public class DetailView extends AppCompatActivity implements OnMapReadyCallback,
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
