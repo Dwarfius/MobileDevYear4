@@ -8,7 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 
 /**
- * Created by Dwarfius on 11/26/2016.
+ * Created by Daniel Prihodko, S1338994 on 11/26/2016.
  */
 
 public class TypeDialog extends AppCompatDialogFragment {

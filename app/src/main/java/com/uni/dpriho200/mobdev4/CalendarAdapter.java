@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by Dwarfius on 11/14/2016.
+ * Created by Daniel Prihodko, S1338994 on 11/14/2016.
  */
 
 class CalendarAdapter extends ArrayAdapter<Object> {

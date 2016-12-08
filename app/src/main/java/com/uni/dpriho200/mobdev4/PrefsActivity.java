@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 /**
- * Created by Dwarfius on 11/27/2016.
+ * Created by Daniel Prihodko, S1338994 on 11/27/2016.
  */
 
 public class PrefsActivity extends AppCompatActivity {

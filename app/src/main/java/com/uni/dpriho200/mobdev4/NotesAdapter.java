@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 /**
- * Created by Dwarfius on 11/22/2016.
+ * Created by Daniel Prihodko, S1338994 on 11/22/2016.
  */
 
 class NotesAdapter extends ArrayAdapter<Note> {

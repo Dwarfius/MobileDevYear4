@@ -22,7 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by Dwarfius on 11/26/2016.
+ * Created by Daniel Prihodko, S1338994 on 11/26/2016.
  */
 
 public class AlarmDialog extends AppCompatDialogFragment implements TimePicker.OnTimeChangedListener {

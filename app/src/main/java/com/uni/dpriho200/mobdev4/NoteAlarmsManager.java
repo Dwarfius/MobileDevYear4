@@ -15,7 +15,7 @@ import android.util.Log;
 import java.util.Calendar;
 
 /**
- * Created by Dwarfius on 12/1/2016.
+ * Created by Daniel Prihodko, S1338994 on 12/1/2016.
  */
 
 public class NoteAlarmsManager extends BroadcastReceiver {

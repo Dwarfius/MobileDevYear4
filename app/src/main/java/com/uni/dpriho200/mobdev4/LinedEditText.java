@@ -3,14 +3,13 @@ package com.uni.dpriho200.mobdev4;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
 /**
- * Created by Dwarfius on 11/26/2016.
+ * Created by Daniel Prihodko, S1338994 on 11/26/2016.
  */
 
 class LinedEditText extends EditText {

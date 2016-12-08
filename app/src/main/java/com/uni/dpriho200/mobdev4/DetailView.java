@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialogFragment;
@@ -49,6 +48,10 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * Created by Daniel Prihodko, S1338994 on 11/22/2016.
+ */
 
 public class DetailView extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener,
@@ -124,7 +127,6 @@ public class DetailView extends AppCompatActivity implements OnMapReadyCallback,
 
     @Override
     protected void onDestroy() {
-        Log.i("CW", "Activity destroyed");
         super.onDestroy();
     }
 

@@ -13,7 +13,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 /**
- * Created by Dwarfius on 11/26/2016.
+ * Created by Daniel Prihodko, S1338994 on 11/26/2016.
  */
 
 interface NoteDialogInterface {

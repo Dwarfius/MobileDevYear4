@@ -1,13 +1,8 @@
 package com.uni.dpriho200.mobdev4;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,10 +10,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.view.View;
 
-import com.kizitonwose.colorpreference.ColorDialog;
-import com.kizitonwose.colorpreference.ColorShape;
-
 import java.util.ArrayList;
+
+/**
+ * Created by Daniel Prihodko, S1338994 on 11/22/2016.
+ */
 
 public class CalendarView extends AppCompatActivity implements AdapterView.OnItemClickListener {
     String user;

@@ -42,6 +42,10 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
+/**
+ * Created by Daniel Prihodko, S1338994 on 11/17/2016.
+ */
+
 public class LogIn extends AppCompatActivity
 {
     private String viewState, eventValidation;
